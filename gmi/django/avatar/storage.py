@@ -25,7 +25,7 @@ class GravatarStorage(Storage):
 
     def path(self, name):
         return(
-            'temporary file - avatar for {} {}'.format(name, self._resolution))
+            'gravatar|{}|{}'.format(name, self._resolution))
 
     @property
     def empty(self):
@@ -45,7 +45,10 @@ class GravatarStorage(Storage):
     def _receive(self):
         g = Gravatar(self._email)
         response = urllib.request.urlopen(
-            g.get_image(size=self._resolution, use_ssl=True))
+            g.get_image(
+                size=self._resolution,
+                default='retro',
+                use_ssl=True))
 
         # XXX this is not thread safe
         if self.empty:

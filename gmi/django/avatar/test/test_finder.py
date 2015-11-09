@@ -41,5 +41,7 @@ class AvatarFinderTestCase(LiveServerTestCase):
     def test_list_returns_file_list(self):
         avatar_list = self.avatar_finder.list(None)
         avatar_item = list(avatar_list)[0]
-        self.assertEqual(avatar_item[0], 'john@example.com')
+        self.assertEqual(
+            avatar_item[0],
+            '855f96e983f1f8e8be944692b6f719fd54329826cb62e98015efee8e2e071dd4.jpg')
         self.assertIsInstance(avatar_item[1], Storage)

@@ -54,8 +54,7 @@ class GravatarStorageTestCase(TestCase):
 
     def test_path(self):
         self.assertEqual(
-            self.gravatar_storage.path('foo'),
-            'temporary file - avatar for foo 80')
+            self.gravatar_storage.path('foo'), 'gravatar|foo|80')
 
     def test_open(self):
         self.assertIsInstance(self.gravatar_storage._open('foo'), File)

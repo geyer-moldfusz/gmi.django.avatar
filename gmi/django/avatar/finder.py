@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from django.contrib.staticfiles import finders
-from gmi.django.avatar.storage import GravatarStorage
 from libgravatar import Gravatar
+
+from gmi.django.avatar.storage import GravatarStorage
+from gmi.django.avatar.utils import hash_email
 
 
 class AvatarFinder(finders.BaseFinder):
@@ -23,4 +25,5 @@ class AvatarFinder(finders.BaseFinder):
         """
         for user in self.users:
             for res in (80, 160, 320):
-                yield user.email, GravatarStorage(user.email, resolution=res)
+                yield '{}.{}'.format(hash_email(user.email), 'jpg'), \
+                      GravatarStorage(user.email, resolution=res)
