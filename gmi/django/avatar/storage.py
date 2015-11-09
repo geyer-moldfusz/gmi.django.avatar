@@ -2,8 +2,10 @@ from django.core.files import File
 from django.core.files.storage import Storage
 from libgravatar import Gravatar
 from tempfile import TemporaryFile
-import os
 import urllib.request
+
+import gmi.django.avatar.utils as utils
+
 
 class GravatarStorage(Storage):
     """
@@ -20,8 +22,7 @@ class GravatarStorage(Storage):
         self._email = email
         self._resolution = resolution
 
-        self.prefix = os.path.join(
-            'avatar', '{}x{}'.format(resolution, resolution))
+        self.prefix = utils.get_avatar_prefix(resolution)
 
     def path(self, name):
         return(
