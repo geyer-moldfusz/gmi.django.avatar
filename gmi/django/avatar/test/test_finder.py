@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.core.files.storage import Storage
 from django.test import LiveServerTestCase
-from gmi.django.avatar.staticfiles.finders import AvatarFinder
+from gmi.django.avatar.finder import AvatarFinder
 
 
 class AvatarFinderTestCase(LiveServerTestCase):
