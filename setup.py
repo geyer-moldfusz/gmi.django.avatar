@@ -5,7 +5,8 @@ version = '0.1'
 
 requires = [
     'Django',
-    'setuptools'
+    'setuptools',
+    'libgravatar',
 ]
 
 setup(name='gmi.django.avatar',
@@ -20,7 +21,7 @@ XXX long description""",
       url='',
       license='GPLv3',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-      namespace_packages=['gmidjango'],
+      namespace_packages=['gmi', 'gmi.django'],
       include_package_data=True,
       zip_safe=False,
       install_requires=requires,
