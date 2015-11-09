@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.handlers import StaticFilesHandler
+from django.core.files.storage import Storage
 from django.test import LiveServerTestCase
 from gmi.django.avatar.staticfiles.finders import AvatarFinder
-from unittest.mock import MagicMock
 
 
 class AvatarFinderTestCase(LiveServerTestCase):
@@ -38,7 +38,8 @@ class AvatarFinderTestCase(LiveServerTestCase):
             ['<User: john>', '<User: paul>'],
             ordered=False)
 
-    def test_return_gravatar_urls(self):
-        self.assertListEqual(
-            ['foo', 'bar'],
-            self.avatar_finder.find())
+    def test_list_returns_file_list(self):
+        avatar_list = self.avatar_finder.list(None)
+        avatar_item = list(avatar_list)[0]
+        self.assertEqual(avatar_item[0], 'john@example.com')
+        self.assertIsInstance(avatar_item[1], Storage)

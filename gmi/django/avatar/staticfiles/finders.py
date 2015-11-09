@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.staticfiles import finders
+from gmi.django.avatar.storage import GravatarStorage
 from libgravatar import Gravatar
 
 
@@ -14,10 +15,12 @@ class AvatarFinder(finders.BaseFinder):
         super(AvatarFinder, self).__init__(*args, **kwargs)
 
     def find(self, path, all=False):
-        """
-        Cycles all users and tries to download an avatar image.
-        """
-        import pdb; pdb.set_trace()
+        pass
 
     def list(self, ignore_patterns):
-        return ['foo']
+        """
+        List avatars for all users.
+        """
+        for user in self.users:
+            for res in (80, 160, 320):
+                yield user.email, GravatarStorage(user.email, resolution=res)
