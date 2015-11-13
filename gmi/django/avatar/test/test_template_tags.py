@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.template import Context, Template
 
 class AvatarTemplateTagsTestCase(TestCase):
+    default_img = 'default.png'
 
     def setUp(self):
         self.john = User.objects.create_user(
@@ -11,12 +12,14 @@ class AvatarTemplateTagsTestCase(TestCase):
     def test_avatar_url_valid(self):
         template = Template("{% load avatar_tags %}{{ user|avatar_url }}")
         rendered = template.render(Context(dict(user=self.john)))
-        self.assertIn('/static/avatar/160x160/none', rendered)
+        self.assertIn(
+            '/static/avatar/160x160/{}'.format(self.default_img), rendered)
 
     def test_avatar_url_resolution(self):
         template = Template("{% load avatar_tags %}{{ user|avatar_url:320 }}")
         rendered = template.render(Context(dict(user=self.john)))
-        self.assertIn('/static/avatar/320x320/none', rendered)
+        self.assertIn(
+            '/static/avatar/320x320/{}'.format(self.default_img), rendered)
 
     def test_avatar_url_html_injection(self):
         template = Template(

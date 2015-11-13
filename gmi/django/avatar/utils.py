@@ -22,4 +22,4 @@ def get_avatar_url(user, resolution):
         except Avatar.DoesNotExist:
             pass
 
-    return os.path.join(get_avatar_prefix(resolution), 'none')
+    return os.path.join(get_avatar_prefix(resolution), 'default.png')

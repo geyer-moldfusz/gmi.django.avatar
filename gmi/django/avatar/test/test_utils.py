@@ -6,7 +6,7 @@ import gmi.django.avatar.utils as utils
 
 
 class UtilsTestCase(TestCase):
-    default_img = 'none'
+    default_img = 'default.png'
 
     def setUp(self):
         pass
