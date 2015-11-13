@@ -2,6 +2,7 @@ from django.core.files import File
 from django.test import TestCase
 from io import BufferedRandom, BytesIO
 from unittest.mock import Mock
+from urllib.error import HTTPError
 
 import gmi.django.avatar.storage as storage
 
@@ -11,6 +12,9 @@ class GravatarStorageTestCase(TestCase):
         storage.urllib.request.urlopen = Mock()
         storage.urllib.request.urlopen.return_value = BytesIO(b'foo')
 
+        self.http_404 = HTTPError('dummy_url', 404, 'not found', None, None)
+        self.http_500 = HTTPError('dummy_url', 500, 'server error', None, None)
+
         self.gravatar_storage = storage.GravatarStorage(
             email='test@example.com')
 
@@ -19,26 +23,22 @@ class GravatarStorageTestCase(TestCase):
             self.gravatar_storage.path('foo')
         except Exception as e:
             self.assertNotIsInstance(e, NotImplementedError)
-            pass
 
     def test_open_is_implemented(self):
         try:
             self.gravatar_storage._open('foo')
         except Exception as e:
             self.assertNotIsInstance(e, AttributeError)
-            pass
 
     def test_email(self):
         self.assertEqual(
-            storage.GravatarStorage(email='test@example.com')._email,
+            storage.GravatarStorage(email='test@example.com').email,
             'test@example.com')
 
     def test_resolution(self):
-        self.assertEqual(
-            storage.GravatarStorage(email='test@example.com')._resolution, 80)
-        self.assertEqual(
-            storage.GravatarStorage(
-                email='test@example.com', resolution=160)._resolution, 160)
+        gravatar_storage = storage.GravatarStorage(
+            email='test@example.com', resolution=160)
+        self.assertEqual(gravatar_storage._resolution, 160)
 
     def test_prefix(self):
         self.assertEqual(
@@ -50,6 +50,7 @@ class GravatarStorageTestCase(TestCase):
             'avatar/160x160')
 
     def test_temporary_file(self):
+        self.gravatar_storage._open('foo')
         self.assertIsInstance(self.gravatar_storage._tmp, BufferedRandom)
 
     def test_path(self):
@@ -58,22 +59,49 @@ class GravatarStorageTestCase(TestCase):
 
     def test_open(self):
         self.assertIsInstance(self.gravatar_storage._open('foo'), File)
-        self.assertEqual(self.gravatar_storage._tmp.read(), b'foo')
+        self.assertEqual(self.gravatar_storage._open('foo').read(), b'foo')
 
-    def test_open_if_already_received(self):
+    def test_load(self):
         gravatar_storage = storage.GravatarStorage(email='test@example.com')
-        gravatar_storage.__empty__ = False
+        gravatar_storage.load()
+        self.assertEqual(gravatar_storage._tmp.read(), b'foo')
+
+    def test_load_if_already_received(self):
+        gravatar_storage = storage.GravatarStorage(email='test@example.com')
         gravatar_storage._tmp = BytesIO(b'baz')
         gravatar_storage._tmp.seek(0)
-        gravatar_storage._open('foo')
+        gravatar_storage.load()
         self.assertEqual(gravatar_storage._tmp.read(), b'baz')
 
+    def test_load_unknown(self):
+        storage.urllib.request.urlopen.side_effect = self.http_404
+        gravatar_storage = storage.GravatarStorage(email='test@example.com')
+        with self.assertRaises(storage.GravatarUnknownError):
+            gravatar_storage.load()
+
+    def test_load_raise_on_HTTP_error(self):
+        storage.urllib.request.urlopen.side_effect = self.http_500
+        gravatar_storage = storage.GravatarStorage(email='test@example.com')
+        with self.assertRaises(HTTPError):
+            gravatar_storage.load()
+
     def test_receive(self):
-        self.gravatar_storage._receive()
-        self.assertEqual(self.gravatar_storage._tmp.read(), b'foo')
+        self.assertEqual(self.gravatar_storage._receive().read(), b'foo')
+
+    def test_receive_unknown(self):
+        storage.urllib.request.urlopen.side_effect = self.http_404
+        gravatar_storage = storage.GravatarStorage(email='test@example.com')
+        with self.assertRaises(HTTPError):
+            gravatar_storage._receive()
 
     def test_empty(self):
         gravatar_storage = storage.GravatarStorage(email='test@example.com')
-        self.assertTrue(gravatar_storage.empty)
         gravatar_storage._open('foo')
         self.assertFalse(gravatar_storage.empty)
+
+    def test_gravatar_unknown_error(self):
+        with self.assertRaisesMessage(
+            storage.GravatarUnknownError,
+            'no Gravatar found for test@example.com') as context:
+                raise storage.GravatarUnknownError(email='test@example.com')
+        self.assertEqual(context.exception.email, 'test@example.com')

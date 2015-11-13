@@ -4,7 +4,8 @@ from django.contrib.staticfiles import finders
 from libgravatar import Gravatar
 import os
 
-from gmi.django.avatar.storage import GravatarStorage
+from gmi.django.avatar.models import Avatar
+from gmi.django.avatar.storage import GravatarStorage, GravatarUnknownError
 from gmi.django.avatar.utils import hash_email
 
 
@@ -42,5 +43,21 @@ class AvatarFinder(finders.BaseFinder):
         """
         for user in self.users:
             for res in (80, 160, 320):
-                yield hash_email(user.email), \
-                      GravatarStorage(user.email, resolution=res)
+                # create storage, try to get an Gravatar image
+                storage = GravatarStorage(user.email, resolution=res)
+                try:
+                    storage.load()
+                except GravatarUnknownError:
+                    continue
+                yield hash_email(user.email), storage
+
+                # If we are here, the Gravatar image has been saved to a static
+                # storage, so we register the email address to correspond with
+                # a valid image.
+
+                # XXX we have to check for dry_runs
+                try:
+                    user.avatar.updated(storage.email)
+                except Avatar.DoesNotExist:
+                    avatar = Avatar.objects.create(
+                        user=user, received_for=storage.email)
