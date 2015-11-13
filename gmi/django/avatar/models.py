@@ -12,14 +12,7 @@ class Avatar(models.Model):
         checks if the email address was updated and the received Avatar is
         outdated.
         """
-        return self.received_for is not self.user.email
-
-#    @property
-#    def url(self):
-#        """
-#        returns the Avatar image url for this user.
-#        """
-#        return utils.get_avatar_url(self.user, 160)
+        return self.received_for != self.user.email
 
     def updated(self, email):
         """

@@ -14,7 +14,7 @@ class AvatarModelTestCase(TestCase):
         self.assertIsInstance(self.john.avatar, Avatar)
 
     def test_outdated_if_current(self):
-        self.john.avatar.received_for = self.john.email
+        self.john.avatar.received_for = 'john@example.com'
         self.assertFalse(self.john.avatar.outdated)
 
     def test_outdated_if_not_current(self):
