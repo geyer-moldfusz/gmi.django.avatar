@@ -19,3 +19,7 @@ class Avatar(models.Model):
         call when the Avatar image was updated for the given email address.
         """
         self.received_for = email
+
+    def url(self, resolution):
+        import gmi.django.avatar.utils as utils
+        return utils.get_avatar_url(self.user, resolution)

@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
-from gmi.django.avatar.models import Avatar
 
+from gmi.django.avatar.models import Avatar
+import gmi.django.avatar.utils as utils
 
 class AvatarModelTestCase(TestCase):
     def setUp(self):
@@ -24,3 +25,8 @@ class AvatarModelTestCase(TestCase):
     def test_updated(self):
         self.john.avatar.updated('test@example.com')
         self.assertEqual(self.john.avatar.received_for, 'test@example.com')
+
+    def test_url(self):
+        self.assertEqual(
+            self.john.avatar.url(resolution=160),
+            utils.get_avatar_url(self.john, resolution=160))
