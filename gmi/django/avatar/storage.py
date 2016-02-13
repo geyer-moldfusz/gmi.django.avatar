@@ -4,7 +4,6 @@ from django.utils.deconstruct import deconstructible
 from libgravatar import Gravatar
 from tempfile import TemporaryFile
 import os
-import urllib.request
 
 import gmi.django.avatar.utils as utils
 
