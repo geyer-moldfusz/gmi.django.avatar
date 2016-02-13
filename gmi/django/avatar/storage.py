@@ -3,11 +3,17 @@ from django.core.files.storage import Storage
 from django.utils.deconstruct import deconstructible
 from libgravatar import Gravatar
 from tempfile import TemporaryFile
-from urllib.error import HTTPError
 import os
 import urllib.request
 
 import gmi.django.avatar.utils as utils
+
+try:
+    from urllib.error import HTTPError
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import HTTPError
+    from urllib2 import urlopen
 
 
 @deconstructible
@@ -71,11 +77,10 @@ class GravatarStorage(Storage):
         Downloads a Gravatar image. May raise an HTTPError.
         """
         g = Gravatar(self._email)
-        response = urllib.request.urlopen(
-            g.get_image(
-                size=self._resolution,
-                default='404',
-                use_ssl=True))
+        response = urlopen(g.get_image(
+            size=self._resolution,
+            default='404',
+            use_ssl=True))
         return response
 
 

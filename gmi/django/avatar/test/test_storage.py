@@ -9,8 +9,8 @@ import gmi.django.avatar.storage as storage
 
 class GravatarStorageTestCase(TestCase):
     def setUp(self):
-        storage.urllib.request.urlopen = Mock()
-        storage.urllib.request.urlopen.return_value = BytesIO(b'foo')
+        storage.urlopen = Mock()
+        storage.urlopen.return_value = BytesIO(b'foo')
 
         self.http_404 = HTTPError('dummy_url', 404, 'not found', None, None)
         self.http_500 = HTTPError('dummy_url', 500, 'server error', None, None)
@@ -74,13 +74,13 @@ class GravatarStorageTestCase(TestCase):
         self.assertEqual(gravatar_storage._tmp.read(), b'baz')
 
     def test_load_unknown(self):
-        storage.urllib.request.urlopen.side_effect = self.http_404
+        storage.urlopen.side_effect = self.http_404
         gravatar_storage = storage.GravatarStorage(email='test@example.com')
         with self.assertRaises(storage.GravatarUnknownError):
             gravatar_storage.load()
 
     def test_load_raise_on_HTTP_error(self):
-        storage.urllib.request.urlopen.side_effect = self.http_500
+        storage.urlopen.side_effect = self.http_500
         gravatar_storage = storage.GravatarStorage(email='test@example.com')
         with self.assertRaises(HTTPError):
             gravatar_storage.load()
@@ -89,7 +89,7 @@ class GravatarStorageTestCase(TestCase):
         self.assertEqual(self.gravatar_storage._receive().read(), b'foo')
 
     def test_receive_unknown(self):
-        storage.urllib.request.urlopen.side_effect = self.http_404
+        storage.urlopen.side_effect = self.http_404
         gravatar_storage = storage.GravatarStorage(email='test@example.com')
         with self.assertRaises(HTTPError):
             gravatar_storage._receive()
