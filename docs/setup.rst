@@ -1,4 +1,4 @@
-.. _setup
+.. _setup:
 
 Setup
 =====
