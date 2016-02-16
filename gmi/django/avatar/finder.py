@@ -36,7 +36,6 @@ class AvatarFinder(finders.BaseFinder):
                 matches.append(match)
         return matches
 
-
     def list(self, ignore_patterns):
         """
         List avatars for all users.

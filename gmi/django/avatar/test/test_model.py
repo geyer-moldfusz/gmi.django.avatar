@@ -4,6 +4,7 @@ from django.test import TestCase
 from gmi.django.avatar.models import Avatar
 import gmi.django.avatar.utils as utils
 
+
 class AvatarModelTestCase(TestCase):
     def setUp(self):
         self.john = User.objects.create_user(

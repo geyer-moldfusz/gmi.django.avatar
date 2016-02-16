@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.template import Context, Template
 
+
 class AvatarTemplateTagsTestCase(TestCase):
     default_img = 'default.png'
 

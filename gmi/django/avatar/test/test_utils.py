@@ -4,7 +4,6 @@ from gmi.django.avatar.models import Avatar
 import gmi.django.avatar.utils as utils
 
 
-
 class UtilsTestCase(TestCase):
     default_img = 'default.png'
 
@@ -24,7 +23,8 @@ class UtilsTestCase(TestCase):
         avatar = Avatar.objects.create(user=john, received_for=john.email)
         self.assertEqual(
             utils.get_avatar_url(john, 120),
-            'avatar/120x120/855f96e983f1f8e8be944692b6f719fd54329826cb62e98015efee8e2e071dd4')
+            'avatar/120x120/'
+            '855f96e983f1f8e8be944692b6f719fd54329826cb62e98015efee8e2e071dd4')
 
     def test_avatar_url_empty_mail(self):
         john = User.objects.create_user('john', '', 'password')

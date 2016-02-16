@@ -109,6 +109,7 @@ class GravatarStorageTestCase(TestCase):
     def test_gravatar_unknown_error(self):
         with self.assertRaisesMessage(
             storage.GravatarUnknownError,
-            'no Gravatar found for test@example.com') as context:
+            'no Gravatar found for test@example.com'
+        ) as context:
                 raise storage.GravatarUnknownError(email='test@example.com')
         self.assertEqual(context.exception.email, 'test@example.com')

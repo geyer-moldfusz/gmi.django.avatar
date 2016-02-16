@@ -7,6 +7,7 @@ from mock import Mock
 from gmi.django.avatar.storage import GravatarUnknownError
 import gmi.django.avatar.finder as finder
 
+
 class AvatarFinderTestCase(LiveServerTestCase):
     set_handler = StaticFilesHandler
 
@@ -47,12 +48,18 @@ class AvatarFinderTestCase(LiveServerTestCase):
     def test_list_returns_file_list(self):
         self.assertQuerysetEqual(
             self.avatar_finder.list(None), [
-                "('855f96e983f1f8e8be944692b6f719fd54329826cb62e98015efee8e2e071dd4', GravatarStorage)",
-                "('855f96e983f1f8e8be944692b6f719fd54329826cb62e98015efee8e2e071dd4', GravatarStorage)",
-                "('855f96e983f1f8e8be944692b6f719fd54329826cb62e98015efee8e2e071dd4', GravatarStorage)",
-                "('30e6eebb170988262e8c7d6b7a2e4a912ea780f09ea68fb97679fad3c3ee355b', GravatarStorage)",
-                "('30e6eebb170988262e8c7d6b7a2e4a912ea780f09ea68fb97679fad3c3ee355b', GravatarStorage)",
-                "('30e6eebb170988262e8c7d6b7a2e4a912ea780f09ea68fb97679fad3c3ee355b', GravatarStorage)"
+                "('855f96e983f1f8e8be944692b6f719f"
+                "d54329826cb62e98015efee8e2e071dd4', GravatarStorage)",
+                "('855f96e983f1f8e8be944692b6f719f"
+                "d54329826cb62e98015efee8e2e071dd4', GravatarStorage)",
+                "('855f96e983f1f8e8be944692b6f719f"
+                "d54329826cb62e98015efee8e2e071dd4', GravatarStorage)",
+                "('30e6eebb170988262e8c7d6b7a2e4a9"
+                "12ea780f09ea68fb97679fad3c3ee355b', GravatarStorage)",
+                "('30e6eebb170988262e8c7d6b7a2e4a9"
+                "12ea780f09ea68fb97679fad3c3ee355b', GravatarStorage)",
+                "('30e6eebb170988262e8c7d6b7a2e4a9"
+                "12ea780f09ea68fb97679fad3c3ee355b', GravatarStorage)"
             ])
 
     def test_list_handles_gravatar_unknown_error(self):
