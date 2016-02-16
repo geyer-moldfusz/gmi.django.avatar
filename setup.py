@@ -25,6 +25,8 @@ XXX long description""",
       include_package_data=True,
       zip_safe=False,
       install_requires=requires,
+      tests_require=['django-nose', 'mock'],
+      test_suite='gmi.django.avatar.test.runner.runtests',
       entry_points="""
       # -*- Entry points: -*-
       """,

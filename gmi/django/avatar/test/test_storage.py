@@ -1,10 +1,14 @@
 from django.core.files import File
 from django.test import TestCase
 from io import BufferedRandom, BytesIO
-from unittest.mock import Mock
-from urllib.error import HTTPError
+from mock import Mock
 
 import gmi.django.avatar.storage as storage
+
+try:
+    from urllib.error import HTTPError
+except ImportError:
+    from urllib2 import HTTPError
 
 
 class GravatarStorageTestCase(TestCase):
@@ -51,7 +55,10 @@ class GravatarStorageTestCase(TestCase):
 
     def test_temporary_file(self):
         self.gravatar_storage._open('foo')
-        self.assertIsInstance(self.gravatar_storage._tmp, BufferedRandom)
+        try:
+            self.assertIsInstance(self.gravatar_storage._tmp,  BufferedRandom)
+        except AssertionError:
+            self.assertIsInstance(self.gravatar_storage._tmp, file)
 
     def test_path(self):
         self.assertEqual(

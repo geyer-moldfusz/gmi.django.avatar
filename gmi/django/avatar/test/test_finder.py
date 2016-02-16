@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.core.files.storage import Storage
 from django.test import LiveServerTestCase
-from unittest.mock import Mock
+from mock import Mock
 
 from gmi.django.avatar.storage import GravatarUnknownError
 import gmi.django.avatar.finder as finder
